@@ -3,4 +3,5 @@
 
     <string name="app_name">Yes/No</string>
     <string name="loading_text">Asking Nature ... Keep your fingers crossed ...</string>
+    <string name="loading_text_error">Oops... lets ask again ... </string>
 </resources>

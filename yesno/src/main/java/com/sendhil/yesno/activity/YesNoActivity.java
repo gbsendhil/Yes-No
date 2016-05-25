@@ -19,6 +19,8 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -40,6 +42,7 @@ public class YesNoActivity extends Activity implements OnClickListener {
 	private LinearLayout mLinearLayout = null;
 	private ImageView mImageView  =null;
 	private AnimationSet animationSet = null;
+	private TextView mTextView = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class YesNoActivity extends Activity implements OnClickListener {
 		mGifImageView = ((GifImageView)findViewById(R.id.gifImageView));
 		mLinearLayout = (LinearLayout) findViewById(R.id.loadingLayout);
 		mImageView = (ImageView) findViewById(R.id.loadingDrawable);
+		mTextView = (TextView) findViewById(R.id.loadingText);
 
 		animationSet = new AnimationSet(true);
 
@@ -77,7 +81,7 @@ public class YesNoActivity extends Activity implements OnClickListener {
 		new LongRunningGetIO().execute();
 	}
 
-	private class LongRunningGetIO extends AsyncTask<Void, Void, Void> {
+	private class LongRunningGetIO extends AsyncTask<Void, Void, Response> {
 
 
 		@Override
@@ -91,10 +95,10 @@ public class YesNoActivity extends Activity implements OnClickListener {
 
 
 		@Override
-		protected Void doInBackground(Void... params) {
-
+		protected Response doInBackground(Void... params) {
+			Response response = null;
 			try {
-				Response response = null;
+
 				String responseString = "", data = "";
 
 				URL url = new URL("http://yesno.wtf/api/");
@@ -134,13 +138,24 @@ public class YesNoActivity extends Activity implements OnClickListener {
 					basicImageDownloader.download(response.getImage(), false);
 			} catch (MalformedURLException m) {
 				m.printStackTrace();
+				return null;
 			} catch (IOException e) {
 				e.printStackTrace();
+				return null;
 			}
-			return null;
+			return response;
 		}
 
+		@Override
+		protected void onPostExecute(Response response) {
+			super.onPostExecute(response);
+
+			if(null==response){
+				showNetworkError();
+			}
+		}
 	}
+
 
 	@Override
 	public void onBackPressed() {
@@ -148,6 +163,7 @@ public class YesNoActivity extends Activity implements OnClickListener {
 			super.onBackPressed();
 		}else {
 			toggleQuestion(true);
+			mLinearLayout.setVisibility(View.GONE);
 			mGifImageView.setVisibility(View.GONE);
 		}
 	}
@@ -162,5 +178,10 @@ public class YesNoActivity extends Activity implements OnClickListener {
 			mImageButton.setVisibility(View.GONE);
 			mImageButton.setAnimation(null);
 		}
+	}
+
+	private void showNetworkError(){
+
+		mTextView.setText(R.string.loading_text_error);
 	}
 }
