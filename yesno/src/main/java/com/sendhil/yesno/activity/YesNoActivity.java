@@ -1,5 +1,6 @@
 package com.sendhil.yesno.activity;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 
 import com.sendhil.yesno.network.BasicImageDownloader;
@@ -22,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.fabric.sdk.android.Fabric;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,6 +49,7 @@ public class YesNoActivity extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Fabric.with(this, new Crashlytics());
 		setContentView(R.layout.main_layout);
 		mImageButton = (ImageButton) findViewById(R.id.my_button);
 		mImageButton.setOnClickListener(this);
