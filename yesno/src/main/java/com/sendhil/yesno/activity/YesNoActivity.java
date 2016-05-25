@@ -8,6 +8,7 @@ import com.sendhil.yesno.pojo.Response;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -34,6 +37,9 @@ public class YesNoActivity extends Activity implements OnClickListener {
 	private static final String TAG = YesNoActivity.class.getSimpleName();
 	private GifImageView mGifImageView = null;
 	private ImageButton mImageButton = null;
+	private LinearLayout mLinearLayout = null;
+	private ImageView mImageView  =null;
+	private AnimationSet animationSet = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,9 +48,10 @@ public class YesNoActivity extends Activity implements OnClickListener {
 		mImageButton = (ImageButton) findViewById(R.id.my_button);
 		mImageButton.setOnClickListener(this);
 		mGifImageView = ((GifImageView)findViewById(R.id.gifImageView));
+		mLinearLayout = (LinearLayout) findViewById(R.id.loadingLayout);
+		mImageView = (ImageView) findViewById(R.id.loadingDrawable);
 
-
-		AnimationSet animationSet = new AnimationSet(true);
+		animationSet = new AnimationSet(true);
 
 
 		ScaleAnimation fade_in =  new ScaleAnimation(2f, 0.75f, 2f, 0.75f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -64,20 +71,22 @@ public class YesNoActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View arg0) {
-		ImageButton b = (ImageButton) findViewById(R.id.my_button);
-		b.setClickable(false);
+
+		toggleQuestion(false);
+
 		new LongRunningGetIO().execute();
 	}
 
 	private class LongRunningGetIO extends AsyncTask<Void, Void, Void> {
 
-		ProgressDialog mProgressDialog = new ProgressDialog(YesNoActivity.this);
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			mProgressDialog.setMessage(getString(R.string.loading_text));
-			mProgressDialog.show();
+			mLinearLayout.setVisibility(View.VISIBLE);
+			mImageView.setBackgroundResource(R.drawable.animation_progress);
+			AnimationDrawable frameAnimation = (AnimationDrawable) mImageView.getBackground();
+			frameAnimation.start();
 		}
 
 
@@ -112,8 +121,12 @@ public class YesNoActivity extends Activity implements OnClickListener {
 
 					@Override
 					public void onComplete(GifDrawable result) {
-						mProgressDialog.dismiss();
+						mLinearLayout.setVisibility(View.GONE);
 						mGifImageView.setImageDrawable(result);
+						mImageButton.setClickable(true);
+						mImageButton.setVisibility(View.GONE);
+						mGifImageView.setVisibility(View.VISIBLE);
+						mLinearLayout.setVisibility(View.GONE);
 					}
 				});
 
@@ -127,14 +140,6 @@ public class YesNoActivity extends Activity implements OnClickListener {
 			return null;
 		}
 
-		protected void onPostExecute(Void aVoid) {
-			super.onPostExecute(aVoid);
-
-			mImageButton.setClickable(true);
-			mImageButton.setVisibility(View.GONE);
-			mGifImageView.setVisibility(View.VISIBLE);
-			mProgressDialog.dismiss();
-		}
 	}
 
 	@Override
@@ -142,8 +147,20 @@ public class YesNoActivity extends Activity implements OnClickListener {
 		if(mImageButton.getVisibility()==View.VISIBLE){
 			super.onBackPressed();
 		}else {
-			mImageButton.setVisibility(View.VISIBLE);
+			toggleQuestion(true);
 			mGifImageView.setVisibility(View.GONE);
+		}
+	}
+
+	private void toggleQuestion(boolean isEnabled){
+		if(isEnabled){
+			mImageButton.setClickable(true);
+			mImageButton.setVisibility(View.VISIBLE);
+			mImageButton.startAnimation(animationSet);
+		}else{
+			mImageButton.setClickable(false);
+			mImageButton.setVisibility(View.GONE);
+			mImageButton.setAnimation(null);
 		}
 	}
 }

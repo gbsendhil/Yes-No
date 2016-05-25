@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android-gif-drawable-basic-sample.iml" filepath="$PROJECT_DIR$/android-gif-drawable-basic-sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/yesno/app.iml" filepath="$PROJECT_DIR$/yesno/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yesno/yesno.iml" filepath="$PROJECT_DIR$/yesno/yesno.iml" />
     </modules>
   </component>
 </project>

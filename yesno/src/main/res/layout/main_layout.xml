@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-	android:background="#d6d7d7">
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:background="#d6d7d7">
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-		android:src="@drawable/question"
-		android:id="@+id/my_button"/>
+	<ImageButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:src="@drawable/question"
+			android:id="@+id/my_button"/>
+
+	<LinearLayout android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:layout_centerInParent="true"
+				  android:id="@+id/loadingLayout"
+				  android:visibility="gone"
+				  android:orientation="vertical">
+
+		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+				  android:id="@+id/loadingText"
+				  android:textSize="16sp"
+				  android:padding="10dp"
+				  android:text="@string/loading_text"/>
+
+		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+				   android:id="@+id/loadingDrawable"
+				   android:layout_gravity="center_horizontal"
+				   android:background="@drawable/loading_1"/>
+
+	</LinearLayout>
 
 	<pl.droidsonroids.gif.GifImageView
 			android:id="@+id/gifImageView"
